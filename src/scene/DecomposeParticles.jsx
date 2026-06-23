@@ -24,7 +24,8 @@ export const DEFAULTS = {
   freq: 0.35, // curl-noise spatial frequency (turbulence scale)
   pointSize: 88.0, // base point size (px, before perspective scaling)
 }
-export const SUBJECT_SRC = '/subject.jpg'
+// Resolved against Vite's base URL so it works under a GitHub Pages subpath.
+export const SUBJECT_SRC = `${import.meta.env.BASE_URL}subject.jpg`
 
 const vertexWithNoise = `${curlNoise}\n${vertexShader}`
 
