@@ -1,0 +1,56 @@
+name: Retirar la web
+
+# Da de baja el sitio de GitHub Pages (deja de servirse en su URL).
+# Se lanza manualmente desde la pestaña Actions y requiere confirmación
+# escribiendo "RETIRAR" para evitar ejecuciones accidentales.
+on:
+  workflow_dispatch:
+    inputs:
+      confirmacion:
+        description: 'Escribe RETIRAR para confirmar que quieres dar de baja la web'
+        required: true
+        default: ''
+
+permissions:
+  contents: read
+  pages: write
+
+# Mismo grupo que el resto de pipelines de Pages para que no se solapen.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  takedown:
+    name: Dar de baja GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar la confirmación
+        if: ${{ inputs.confirmacion != 'RETIRAR' }}
+        run: |
+          echo "::error::Debes escribir exactamente RETIRAR para confirmar. Cancelando."
+          exit 1
+
+      - name: Desactivar el sitio de GitHub Pages
+        env:
+          # El GITHUB_TOKEN automático NO puede borrar Pages (es un endpoint
+          # administrativo → 403 "Resource not accessible by integration").
+          # Hace falta un PAT con permiso de administración del repo, guardado
+          # en el secreto PAGES_ADMIN_TOKEN (Settings → Secrets → Actions).
+          GH_TOKEN: ${{ secrets.PAGES_ADMIN_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Falta el secreto PAGES_ADMIN_TOKEN (PAT con permiso de administración). El GITHUB_TOKEN por defecto no puede dar de baja Pages."
+            exit 1
+          fi
+          # Da de baja Pages. `gh api` sale con error en respuestas >=400; el
+          # 404 (Pages ya estaba desactivado) lo tratamos como éxito.
+          if gh api -X DELETE "repos/${{ github.repository }}/pages" --silent 2>err.log; then
+            echo "✅ Web retirada correctamente."
+          elif grep -q "HTTP 404" err.log; then
+            echo "ℹ️  La web ya estaba retirada (Pages no estaba activo)."
+          else
+            echo "::error::Respuesta inesperada de la API al retirar Pages:"
+            cat err.log
+            exit 1
+          fi

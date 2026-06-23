@@ -1,43 +1,59 @@
-name: Deploy to GitHub Pages
+name: Desplegar en GitHub Pages
 
+# Despliega automáticamente al hacer push a la rama principal,
+# y permite lanzarlo manualmente desde la pestaña Actions.
 on:
   push:
     branches: [master]
   workflow_dispatch:
 
-# Allow the workflow to publish to Pages.
+# Permisos mínimos necesarios para publicar en GitHub Pages.
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# One deploy at a time; let an in-progress run finish.
+# Evita despliegues solapados; cancela los que estén en cola.
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
+    name: Construir
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Clonar repositorio
+        uses: actions/checkout@v6
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Compilar el sitio
+        run: npm run build
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v6
+
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
   deploy:
+    name: Desplegar
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

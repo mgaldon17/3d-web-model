@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Página autocontenida: sin scripts ni recursos de terceros. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; form-action 'none'; base-uri 'none'" />
+  <title>En mantenimiento | DECOMPOSE</title>
+  <meta name="description" content="Estamos realizando tareas de mantenimiento. Volvemos enseguida." />
+  <meta name="robots" content="noindex" />
+  <style>
+    :root {
+      --ink: #0a0907;
+      --rust: #c25a2a;
+      --amber: #d49a4b;
+      --bone: #ede4d2;
+      --muted: #8a8073;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: ui-monospace, "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+      background: var(--ink);
+      color: var(--bone);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .glow {
+      position: fixed;
+      border-radius: 9999px;
+      z-index: -10;
+      pointer-events: none;
+    }
+    .glow--top {
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 1000px; height: 600px;
+      background: rgba(194, 90, 42, 0.12);
+      filter: blur(140px);
+    }
+    .glow--bottom {
+      bottom: 0; right: 0;
+      width: 500px; height: 500px;
+      background: rgba(212, 154, 75, 0.08);
+      filter: blur(110px);
+    }
+    /* Grano sutil sobre el fondo, coherente con el sitio. */
+    .vignette {
+      position: fixed; inset: 0; z-index: -5; pointer-events: none;
+      background: radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(0,0,0,0.6) 100%);
+    }
+    main { max-width: 44rem; width: 100%; text-align: center; }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .icon-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 4rem; height: 4rem;
+      margin-bottom: 2rem;
+      border-radius: 1rem;
+      background: linear-gradient(135deg, var(--rust), var(--amber));
+    }
+    .icon-box svg {
+      width: 2rem; height: 2rem;
+      color: var(--ink);
+      animation: spin 5s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    h1 {
+      font-family: Fraunces, Georgia, "Times New Roman", serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--bone);
+      margin-bottom: 1.25rem;
+      line-height: 1.15;
+    }
+    @media (min-width: 768px) { h1 { font-size: 3.4rem; } }
+    h1 em {
+      font-style: italic;
+      background: linear-gradient(to right, var(--rust), var(--amber));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lead {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      max-width: 34rem;
+      margin: 0 auto 2.25rem;
+    }
+    .meta {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #54493c;
+      margin-top: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fondos decorativos -->
+  <div class="glow glow--top"></div>
+  <div class="glow glow--bottom"></div>
+  <div class="vignette"></div>
+
+  <main>
+    <span class="eyebrow">Archive No. 049 — Studies in Dispersion</span>
+
+    <div class="icon-box">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+      </svg>
+    </div>
+
+    <h1>La materia se <em>recompone</em></h1>
+    <p class="lead">
+      Estamos realizando tareas de mantenimiento sobre el sitio.
+      Volverá a estar disponible en breve. Gracias por tu paciencia.
+    </p>
+
+    <p class="meta">© MMXXVI — DECOMPOSE / Visual Study — WebGL</p>
+  </main>
+</body>
+</html>

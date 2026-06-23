@@ -1,0 +1,41 @@
+name: Desplegar página de mantenimiento
+
+# Publica la página genérica de mantenimiento (maintenance/index.html).
+# Se lanza manualmente desde la pestaña Actions cuando se quiere mostrar
+# el aviso de mantenimiento en lugar de la web normal.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Mismo grupo que el resto de pipelines de Pages para que no se solapen.
+# No cancela una operación en curso; espera a que termine.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publicar mantenimiento
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v6
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v6
+
+      - name: Subir la página de mantenimiento
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: maintenance
+
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
