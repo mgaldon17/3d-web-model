@@ -1,8 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
-import Lenis from 'lenis'
 
 import Scene from './scene/Scene.jsx'
-import { setProgress } from './store.js'
+import { useSmoothScroll } from './hooks/useSmoothScroll.js'
+import { scrollStore } from './stores/scrollStore.js'
+import { ScrollProvider } from './stores/ScrollContext.jsx'
+import { startPointerTracking } from './stores/pointerStore.js'
 
 import Cursor from './ui/Cursor.jsx'
 import Grain from './ui/Grain.jsx'
@@ -19,37 +21,18 @@ import Footer from './sections/Footer.jsx'
 export default function App() {
   const [ready, setReady] = useState(false)
 
-  // Lenis is the single source of scroll truth. On every scroll event we write
-  // normalized progress (0→1) into the shared store; the particle system reads it.
-  useEffect(() => {
-    const lenis = new Lenis({
-      lerp: 0.08,
-      smoothWheel: true,
-      wheelMultiplier: 1,
-    })
+  // Lenis is the single source of scroll truth: the hook writes normalized
+  // progress (0→1) into the shared store; the particle system reads it.
+  useSmoothScroll(scrollStore.setProgress)
 
-    lenis.on('scroll', ({ scroll, limit }) => {
-      const p = limit > 0 ? Math.min(1, Math.max(0, scroll / limit)) : 0
-      setProgress(p)
-    })
-
-    let raf
-    const loop = (time) => {
-      lenis.raf(time)
-      raf = requestAnimationFrame(loop)
-    }
-    raf = requestAnimationFrame(loop)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      lenis.destroy()
-    }
-  }, [])
+  // Pointer tracking for camera parallax — started here (composition root) with
+  // explicit teardown rather than as an import side effect.
+  useEffect(() => startPointerTracking(), [])
 
   const handleReady = useCallback(() => setReady(true), [])
 
   return (
-    <>
+    <ScrollProvider value={scrollStore}>
       {/* Fixed full-screen WebGL canvas, behind everything (z-index:1). */}
       <div className="canvas-container">
         <Scene onReady={handleReady} />
@@ -90,6 +73,6 @@ export default function App() {
       <ScrollProgress />
       <Cursor />
       <Loader ready={ready} />
-    </>
+    </ScrollProvider>
   )
 }

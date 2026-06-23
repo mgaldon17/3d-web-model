@@ -4,7 +4,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
 import DecomposeParticles from './DecomposeParticles.jsx'
-import { pointer } from '../store.js'
+import { pointer } from '../stores/pointerStore.js'
 
 // Subtle, sub-1 intensity bloom over the particles only. Grain + vignette live in
 // CSS (see styles.css) so they don't get blurred by postprocessing.
